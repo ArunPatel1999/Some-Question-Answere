@@ -1,0 +1,93 @@
+pom.xml
+
+	<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>5.0.0</version>
+		</dependency>
+		<!-- excel 2007 over -->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>5.0.0</version>
+		</dependency>
+
+
+
+
+
+main Work
+
+public String saveAll(MultipartFile file) throws IOException {
+String inputFilename = file.getOriginalFilename();
+String fileType = inputFilename.substring(inputFilename.lastIndexOf(".") + 1, inputFilename.length());
+if (fileType.equalsIgnoreCase("xlsx") || fileType.equalsIgnoreCase("xls")) {
+return readExcel(zoneList.getInputStream(), fileType);
+} else
+return  PLEASE_ADD_ONLY_XLS_AND_XLSX_TYPE_FILE;
+}
+
+public String readExcel(InputStream is, String type) throws B2bAppException {
+try {
+Workbook workbook = null;
+if (type.equalsIgnoreCase("xlsx"))
+workbook = new XSSFWorkbook(is);
+else if (type.equalsIgnoreCase("xls"))
+workbook = new HSSFWorkbook(is);// XSSFWorkbook(is);
+
+Sheet sheet = workbook.getSheet("1");
+Iterator<Row> rows = sheet.iterator();
+
+int rowNumber = 0;
+while (rows.hasNext()) {
+Row currentRow = rows.next();
+
+// skip header
+if (rowNumber == 0) {
+rowNumber++;
+continue;
+}
+
+Iterator<Cell> cellsInRow = currentRow.iterator();
+
+int cellIdx = 0;
+
+
+int fieldName0 ;
+String fieldName1 ;
+
+while (cellsInRow.hasNext()) {
+Cell currentCell = cellsInRow.next();
+
+switch (cellIdx) {
+case 0:
+int fieldName0  =(int) currentCell.getNumericCellValue();
+break;
+
+
+case 1:
+String fieldName1  = currentCell.getNumericCellValue();
+break;
+//if 5 row  then go to case 0 to  4 :
+
+default:
+break;
+}
+cellIdx++;
+}
+
+
+
+}
+}
+workbook.close();
+
+//using  fieldName create object example User user = new User(fieldName0, filedName);
+
+
+return MessageConstant.SUCCESS;
+} catch (Exception e) {
+
+
+}
+}
